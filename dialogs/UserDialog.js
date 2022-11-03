@@ -3,6 +3,7 @@ const { WaterfallDialog, ComponentDialog } = require('botbuilder-dialogs');
 const { ChoicePrompt, NumberPrompt, TextPrompt } = require('botbuilder-dialogs');
 const { FINALIZATION_DIALOG, FinalizationBot } = require('./FinalizationBot');
 const { User } = require('../models/User');
+const errorMessages = require('../messages/ErrorMessages');
 var axios = require('axios');
 
 const USER_DIALOG = 'USER_DIALOG';
@@ -58,7 +59,11 @@ class UserDialog extends ComponentDialog {
     async validateStartDialog(turnContext) {
         const { context } = turnContext;
         const options = ['Register user', 'Cancel'];
-        return options.includes(context.activity.text);
+        if (options.includes(context.activity.text)) {
+            return true;
+        }
+        turnContext.context.sendActivity(errorMessages.generic);
+        return false;
     }
 
     async redirectStartDialog(step) {
@@ -74,7 +79,11 @@ class UserDialog extends ComponentDialog {
 
     async nameValidation(turnContext) {
         const { entity, intent } = turnContext.context.result;
-        return entity !== undefined && intent.intent === 'user_name';
+        if (entity !== undefined && intent.intent === 'user_name') {
+            return true;
+        }
+        turnContext.context.sendActivity(errorMessages.generic);
+        return false;
     }
 
     async askAge(step) {
@@ -84,7 +93,11 @@ class UserDialog extends ComponentDialog {
 
     async ageValidation(turnContext) {
         const { entity, intent } = turnContext.context.result;
-        return entity !== undefined && intent.intent === 'user_age';
+        if (entity !== undefined && intent.intent === 'user_age') {
+            return true;
+        }
+        turnContext.context.sendActivity(errorMessages.age);
+        return false;
     }
 
     async askGender(step) {
@@ -94,7 +107,11 @@ class UserDialog extends ComponentDialog {
 
     async genderValidation(turnContext) {
         const { entity, intent } = turnContext.context.result;
-        return entity !== undefined && intent.intent === 'user_gender';
+        if (entity !== undefined && intent.intent === 'user_gender') {
+            return true;
+        }
+        turnContext.context.sendActivity(errorMessages.gender);
+        return false;
     }
 
     async askCPF(step) {
@@ -104,7 +121,11 @@ class UserDialog extends ComponentDialog {
 
     async cpfValidation(turnContext) {
         const { entity, intent } = turnContext.context.result;
-        return entity !== undefined && intent.intent === 'user_cpf';
+        if (entity !== undefined && intent.intent === 'user_cpf') {
+            return true;
+        }
+        turnContext.context.sendActivity(errorMessages.cpf);
+        return false;
     }
 
     async askCEP(step) {
@@ -127,6 +148,8 @@ class UserDialog extends ComponentDialog {
                 });
             return responseCEP;
         }
+        turnContext.context.sendActivity(errorMessages.cep);
+        return false;
     }
 
     async askBirthDate(step) {
@@ -137,7 +160,11 @@ class UserDialog extends ComponentDialog {
 
     async birthdateValidation(turnContext) {
         const { entity, intent } = turnContext.context.result;
-        return entity !== undefined && intent.intent === 'user_birthdate';
+        if (entity !== undefined && intent.intent === 'user_birthdate') {
+            return true;
+        }
+        turnContext.context.sendActivity(errorMessages.birthdate);
+        return false;
     }
 
     async askConfirmation(step) {
